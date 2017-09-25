@@ -1,17 +1,18 @@
 package com.db.awmd.challenge;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-
 import com.db.awmd.challenge.domain.Account;
 import com.db.awmd.challenge.exception.DuplicateAccountIdException;
 import com.db.awmd.challenge.service.AccountsService;
-import java.math.BigDecimal;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.math.BigDecimal;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -42,5 +43,22 @@ public class AccountsServiceTest {
       assertThat(ex.getMessage()).isEqualTo("Account id " + uniqueId + " already exists!");
     }
 
+  }
+
+  @Test
+  public void transAmountBetweenAccounts(){
+    String accountId1 = "Id-1";
+    Account account = new Account(accountId1);
+    account.setBalance(new BigDecimal(1000));
+    this.accountsService.createAccount(account);
+
+    String accountId2 = "Id-2";
+    Account account2 = new Account(accountId2);
+    this.accountsService.createAccount(account2);
+
+    this.accountsService.transferAmount(accountId1, accountId2, (new BigDecimal(500)));
+
+    assertThat(this.accountsService.getAccount("Id-2")
+            .getBalance()).isEqualTo(new BigDecimal("500"));
   }
 }
