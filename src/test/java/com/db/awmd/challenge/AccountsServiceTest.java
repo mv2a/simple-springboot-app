@@ -42,8 +42,5 @@ public class AccountsServiceTest {
       assertThat(ex.getMessage()).isEqualTo("Account id " + uniqueId + " already exists!");
     }
 
-
-
-
   }
 }
